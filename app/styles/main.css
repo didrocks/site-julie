@@ -20,6 +20,17 @@ body {
 
 /* HACKS for limitation of current frameworks */
 
+/* traverse shaddy dom for scrolling
+   https://github.com/PolymerElements/paper-scroll-header-panel/issues/46 */
+#headerContainer.paper-scroll-header-panel, .scrollable {
+  pointer-events: none !important;
+}
+/* some elements like paper-tabs, contrary to icons, have then any click prevented */
+.reactive-scroll {
+   pointer-events: auto !important;
+}
+
+
 /* TODO: open a bug for this:
 when changing content size for paper-scroll-header-panel (and so, header-height), then the paper-toolbar inside
 does scroll the title (medium content) way above the screen view. Workaround by hardcoding another translate value :/
