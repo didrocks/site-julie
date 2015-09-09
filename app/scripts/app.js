@@ -40,11 +40,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   addEventListener('paper-header-transform', function(e) {
     var appName = document.querySelector('#mainToolbar .app-name');
     var middleContainer = document.querySelector('#mainToolbar .middle-container');
-    var bottomContainer = document.querySelector('#mainToolbar .bottom-container');
+    var bottomTitle = document.querySelector('#mainToolbar .bottom-title');
     var detail = e.detail;
     var heightDiff = detail.height - detail.condensedHeight;
     var yRatio = Math.min(1, detail.y / heightDiff);
-    var maxMiddleScale = 0.50;  // appName max size when condensed. The smaller the number the smaller the condensed size.
+    var maxMiddleScale = 0.75;  // appName max size when condensed. The smaller the number the smaller the condensed size.
     var scaleMiddle = Math.max(maxMiddleScale, (heightDiff - detail.y) / (heightDiff / (1-maxMiddleScale))  + maxMiddleScale);
     var scaleBottom = 1 - yRatio;
 
@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer.Base.transform('translate3d(0,' + yRatio * 100 + '%,0)', middleContainer);
 
     // Scale bottomContainer and bottom sub title to nothing and back
-    Polymer.Base.transform('scale(' + scaleBottom + ') translateZ(0)', bottomContainer);
+    Polymer.Base.transform('scale(' + scaleBottom + ') translateZ(0)', bottomTitle);
 
     // Scale middleContainer appName
     Polymer.Base.transform('scale(' + scaleMiddle + ') translateZ(0)', appName);
