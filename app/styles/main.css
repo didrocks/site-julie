@@ -12,3 +12,19 @@ body {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
 }
+
+
+#mainToolbar {
+  height: 560px;
+}
+
+/* HACKS for limitation of current frameworks */
+
+/* TODO: open a bug for this:
+when changing content size for paper-scroll-header-panel (and so, header-height), then the paper-toolbar inside
+does scroll the title (medium content) way above the screen view. Workaround by hardcoding another translate value :/
+*/
+paper-toolbar.tall #middleBar.paper-toolbar, paper-toolbar.medium-tall #middleBar.paper-toolbar {
+    -webkit-transform: translateY(620%);
+    transform: translateY(620%);
+  }
