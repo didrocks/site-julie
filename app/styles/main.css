@@ -16,6 +16,11 @@ body {
 
 #mainToolbar {
   height: 560px;
+  background: transparent;
+}
+
+#headerbg {
+  z-index: -1;
 }
 
 /* we do not want any ink or decoration on paper tabs links */
