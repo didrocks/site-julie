@@ -84,15 +84,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="bottom-title paper-font-subhead">My art work</div>
             <span class="flex scrollable"></span>
             <!-- navigation -->
-            <paper-tabs selected="0" class="scrollable horizontal layout end-justified reactive-scroll">
-              <paper-tab>
-                <a href="#link1" class="horizontal center-center layout">TAB ONE</a>
+            <paper-tabs class="scrollable horizontal layout end-justified reactive-scroll"
+                        attr-for-selected="data-route" selected="[[route]]">
+              <paper-tab data-route="home">
+                <a href="/" class="horizontal center-center layout">Travaux</a>
               </paper-tab>
-              <paper-tab>
-                <a href="#link2" class="horizontal center-center layout">TAB TWO</a>
+              <paper-tab data-route="about">
+                <a href="/about" class="horizontal center-center layout">L'artiste</a>
               </paper-tab>
-              <paper-tab>
-                <a href="#link3" class="horizontal center-center layout">TAB THREE</a>
+              <paper-tab data-route="blog">
+                <a href="/blog" class="horizontal center-center layout">Blog</a>
+              </paper-tab>
+              <paper-tab data-route="contact">
+                <a href="/contact" class="horizontal center-center layout">Contact</a>
               </paper-tab>
             </paper-tabs>
           </div>
