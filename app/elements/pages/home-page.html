@@ -2,6 +2,12 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 
+
+<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
+
 <dom-module id="home-page">
   <template>
     <style>
@@ -39,7 +45,7 @@
         }
       }
     </style>
-    <paper-material elevation="1">
+    <paper-material id="hero1" elevation="1">
 
       <p class="paper-font-subhead">You now have:</p>
       <p class="paper-font-body2">Looking for more Web App layouts? Check out our <a href="https://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
@@ -71,7 +77,38 @@
   <script>
     (function () {
       Polymer({
+
         is: 'home-page',
+
+        behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+
+        properties: {
+          animationConfig: {
+            value: function() {
+              return {
+                'entry': {
+                  name: 'fade-in-animation',
+                  node: this
+                },
+                'exit': [{
+                  name: 'hero-animation',
+                  id: 'myheroitem',
+                  fromPage: this
+                }, {
+                  name: 'fade-out-animation',
+                  node: this
+                }]
+              };
+            }
+          },
+          sharedElements: {
+            value: function() {
+              return {
+                'myheroitem': this.$.hero1
+              };
+            }
+          }
+        },
       });
     })();
   </script>
