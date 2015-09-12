@@ -89,11 +89,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   /* Small */
   @media (max-width: 600px) {
-    paper-toolbar.tall .app-name {
-      font-size: 24px;
-      font-weight: 400;
-    }
-
     #overlay {
       min-width: 360px;
     }
@@ -102,6 +97,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: white;
     }
 
+    /* shift title to the left on smaller screens */
+    #mainToolbar .middle-container, #mainToolbar .bottom {
+      margin-left: 10px;
+    }
   }
 
   /* Tablet+ */
