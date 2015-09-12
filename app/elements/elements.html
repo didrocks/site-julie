@@ -19,10 +19,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../bower_components/paper-styles/paper-styles-classes.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<!-- TODO: open a PR for paper-toast as it pulls typography, and thus, pulls roboto font, but doesn't use any class from
+it -->
+<!--<link rel="import" href="../bower_components/paper-toast/paper-toast.html">-->
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
+<!-- we don't want to use roboto or download it (which is imported from paper-styles/paper-styles-classes.html)-->
+<!-- TODO: open a bug as we can't easily override it? -->
+<link rel="import" href="styles/paper-styles-without-roboto-classes.html">
 
 <!-- own elements -->
 <link rel="import" href="../bower_components/img-fixheight/img-fixheight.html">
