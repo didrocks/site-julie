@@ -57,3 +57,13 @@ paper-toolbar.tall #middleBar.paper-toolbar, paper-toolbar.medium-tall #middleBa
     -webkit-transform: translateY(620%);
     transform: translateY(620%);
   }
+
+/* paper-toolbar hardcode paper-tools height, depending on a breakpoint. The consequence is that the title bar is then
+shifted and the transform effect doesn't have the correct initial position. We reset the initial size as this fits well
+smaller device sizes.
+*/
+@media (max-width: 639px) {
+  #middleBar {
+    height: 64px;
+  }
+}
