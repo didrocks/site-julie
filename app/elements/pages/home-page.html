@@ -2,17 +2,20 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 
-
+<link rel="import" href="../../../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/cascaded-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
-<link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/transform-animation.html">
 
 <dom-module id="home-page">
   <template>
     <style>
       :host {
         display: block;
+        visibility: hidden;
       }
 
       paper-material {
@@ -45,16 +48,16 @@
         }
       }
     </style>
-    <paper-material id="hero1" elevation="1">
+    <paper-material class="category" id="hero1" elevation="1">
 
       <p class="paper-font-subhead">You now have:</p>
       <p class="paper-font-body2">Looking for more Web App layouts? Check out our <a href="https://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
     </paper-material>
-    <paper-material elevation="1">
+    <paper-material class="category" elevation="1">
       <p class="paper-font-body2">This is another card.</p>
     </paper-material>
 
-    <paper-material elevation="1" class="paper-font-body2">
+    <paper-material elevation="1" class="paper-font-body2 category">
       <h1 id="license">License</h1>
       <p>Everything in this repo is BSD style license unless otherwise specified.</p>
       <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
@@ -80,15 +83,23 @@
 
         is: 'home-page',
 
-        behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+        behaviors: [
+          Polymer.NeonSharedElementAnimatableBehavior,
+          Polymer.NeonAnimationRunnerBehavior
+        ],
 
         properties: {
           animationConfig: {
             value: function() {
               return {
                 'entry': {
-                  name: 'fade-in-animation',
-                  node: this
+                  name: 'cascaded-animation',
+                  animation: 'transform-animation',
+                  transformFrom: 'translateY(100%)',
+                  transformTo: 'none',
+                  timing: {
+                    delay: 50
+                  }
                 },
                 'exit': [{
                   name: 'hero-animation',
@@ -97,18 +108,35 @@
                 }, {
                   name: 'fade-out-animation',
                   node: this
-                }]
+                }],
               };
             }
           },
+
           sharedElements: {
             value: function() {
               return {
                 'myheroitem': this.$.hero1
               };
             }
-          }
+          },
         },
+
+        attached: function() {
+          // ensure that this dom is ready
+          this.async(function() {
+            var nodeList = Polymer.dom(this.root).querySelectorAll('.category');
+            this.animationConfig.entry.nodes = Array.prototype.slice.call(nodeList);
+          });
+        },
+
+        /* This function is used for the first load animation once the dom is ready.
+         * Next page switch will trigger automatically (through neon-animated-pages) the same "entry" animation.
+         */
+        show: function() {
+          this.style.visibility = 'visible';
+          this.playAnimation('entry');
+        }
       });
     })();
   </script>

@@ -63,4 +63,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     document.getElementById('mainContainer').scrollTop = 0;
   };
 
+  document.addEventListener('WebComponentsReady', function() {
+    // initial load for home page to trigger loading animation
+    document.querySelector('home-page').show();
+  });
+
 })(document);
