@@ -70,6 +70,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Scroll page to top and expand header
   app.scrollPageToTop = function(condenseHeader) {
     var headerPanel = document.querySelector('paper-scroll-header-panel[main]');
+    // this allows to scroll the content to top, even if the final result is condensed
     headerPanel.scroll(headerY, false);
     if (condenseHeader) {
       headerPanel.condense(true);
