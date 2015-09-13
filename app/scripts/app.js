@@ -15,6 +15,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
+  /* TODO: send a pull request to polymer starter kit for this
+    save header y position between page to restore it at the same place.
+    This enables to only condense and not condense header with a smooth transition without restoring to full
+    size first. */
+  var headerY = 0;
+
   app.displayInstalledToast = function() {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
     if (!document.querySelector('platinum-sw-cache').disabled) {
@@ -48,6 +54,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var scaleMiddle = Math.max(maxMiddleScale, (heightDiff - detail.y) / (heightDiff / (1-maxMiddleScale))  + maxMiddleScale);
     var scaleBottom = 1 - yRatio;
 
+    // Save last header Y position
+    headerY = e.detail.y;
+
     // Move/translate middleContainer
     Polymer.Base.transform('translate3d(0,' + yRatio * 100 + '%,0)', middleContainer);
 
@@ -59,8 +68,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   });
 
   // Scroll page to top and expand header
-  app.scrollPageToTop = function() {
-    document.getElementById('mainContainer').scrollTop = 0;
+  app.scrollPageToTop = function(condenseHeader) {
+    var headerPanel = document.querySelector('paper-scroll-header-panel[main]');
+    headerPanel.scroll(headerY, false);
+    if (condenseHeader) {
+      headerPanel.condense(true);
+    } else {
+      headerPanel.scroll(0, true);
+    }
   };
 
   document.addEventListener('WebComponentsReady', function() {
