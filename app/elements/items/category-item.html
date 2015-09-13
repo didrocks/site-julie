@@ -1,0 +1,70 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="category-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        padding: 10px;
+      }
+
+      #titlewrapper {
+        opacity: 0;
+        transition: all 500ms ease-out;
+        background: rgba(75,75,75,0.7); /* TODO: use a color defined in the theme */
+      }
+
+      a:hover #titlewrapper {
+        opacity: 1;
+      }
+
+      .line {
+        height: 2px;
+        width: 0%;
+        margin: 15px auto;
+        background-color: #ffffff;
+        transition: all 500ms ease-out;
+      }
+
+      a:hover .line {
+        width: 100%;
+      }
+
+      paper-material > ::content img {
+        display: block;
+        max-width: 90%;
+      }
+
+    </style>
+    <paper-material elevation="1">
+      <a href="[[href]]" class="layout vertical center">
+        <content id="backgroundimg" select="img"></content>
+        <div id="titlewrapper" class="fit layout vertical center center-justified">
+          <div class="line"></div>
+          <div>[[label]]</div>
+          <div class="line"></div>
+        </div>
+      </a>
+    </paper-material>
+  </template>
+
+  <script>
+    (function () {
+      Polymer({
+        is: 'category-item',
+        properties: {
+          href: String,
+          label: String,
+        },
+      });
+    })();
+  </script>
+
+</dom-module>

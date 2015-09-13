@@ -10,6 +10,8 @@
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/transform-animation.html">
 
+<link rel="import" href="../items/category-item.html">
+
 <dom-module id="home-page">
   <template>
     <style>
@@ -52,7 +54,16 @@
           padding-right: 30px;
         }
       }
+
+      .categories {
+        width: calc(100% / 3);
+      }
+
     </style>
+    <category-item  class="categories" on-tap="_categorySelected"
+                    href="/about" label="My first category">
+      <img class="testimage" src="../../../banner1_960x560.jpg" />
+    </category-item>
     <paper-material class="categories" elevation="1" on-tap="_categorySelected">
       <a href="/about">
         <p class="paper-font-subhead">You now have:</p>
