@@ -18,7 +18,6 @@
       #titlewrapper {
         opacity: 0;
         transition: all 500ms ease-out;
-        background: rgba(75,75,75,0.7); /* TODO: use a color defined in the theme */
         /* do not trigger pointer events so that on-mouseover and on-mouseout are triggered by the container */
         pointer-events: none;
       }
@@ -41,14 +40,14 @@
 
       paper-material > ::content img {
         display: block;
-        max-width: 90%;
+        max-width: 100%;
       }
 
     </style>
     <paper-material id="container" elevation="{{elevation}}" animated
                     on-mouseover="_containerHovered" on-mouseout="_containerExited">
-      <a href="[[href]]" class="layout vertical center">
-        <content id="backgroundimg" select="img"></content>
+      <a href="[[href]]" class="layout vertical">
+          <content select="img"></content>
         <div id="titlewrapper" class="fit layout vertical center center-justified">
           <div class="line"></div>
           <div>[[label]]</div>
