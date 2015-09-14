@@ -19,6 +19,8 @@
         opacity: 0;
         transition: all 500ms ease-out;
         background: rgba(75,75,75,0.7); /* TODO: use a color defined in the theme */
+        /* do not trigger pointer events so that on-mouseover and on-mouseout are triggered by the container */
+        pointer-events: none;
       }
 
       a:hover #titlewrapper {
@@ -43,7 +45,8 @@
       }
 
     </style>
-    <paper-material elevation="1">
+    <paper-material id="container" elevation="{{elevation}}" animated
+                    on-mouseover="_containerHovered" on-mouseout="_containerExited">
       <a href="[[href]]" class="layout vertical center">
         <content id="backgroundimg" select="img"></content>
         <div id="titlewrapper" class="fit layout vertical center center-justified">
@@ -59,9 +62,20 @@
     (function () {
       Polymer({
         is: 'category-item',
+
         properties: {
+          elevation: {
+            type: Number,
+            value: 1
+          },
           href: String,
           label: String,
+        },
+        _containerHovered: function() {
+          this.$.container.elevation = 2;
+        },
+        _containerExited: function() {
+          this.$.container.elevation = this.elevation;
         },
       });
     })();
