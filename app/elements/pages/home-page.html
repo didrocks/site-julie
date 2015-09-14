@@ -5,7 +5,6 @@
 <link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/cascaded-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
-<link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/transform-animation.html">
 
 <link rel="import" href="../items/category-item.html">
@@ -19,23 +18,33 @@
       }
 
       .categories {
-        width: calc(100% / 3);
+        width: 380px;
+        margin: 12px;
       }
 
     </style>
-    <category-item  class="categories" on-tap="_categorySelected"
-                    href="/about" label="My first category">
-      <img class="testimage" src="../../../banner1_960x560.jpg" />
-    </category-item><category-item  class="categories" on-tap="_categorySelected"
-                    href="/about" label="Second category">
-      <img class="testimage" src="../../../banner1_960x560.jpg" />
-    </category-item><category-item  class="categories" on-tap="_categorySelected"
-                    href="/about" label="Another category">
-      <img class="testimage" src="../../../banner1_960x560.jpg" />
-    </category-item><category-item  class="categories" on-tap="_categorySelected"
-                    href="/about" label="And yet another category">
-      <img class="testimage" src="../../../banner1_960x560.jpg" />
-    </category-item>
+    <div class="layout wrap inline center-center">
+      <category-item class="categories" on-tap="_categorySelected"
+                     href="/category" label="My first category">
+        <img class="testimage" src="../../../banner1_960x560.jpg" />
+      </category-item>
+      <category-item class="categories" on-tap="_categorySelected"
+                     href="/category" label="Second category">
+        <img class="testimage" src="../../../banner1_960x560.jpg" />
+      </category-item>
+      <category-item class="categories" on-tap="_categorySelected"
+                     href="/about" label="Another category">
+        <img class="testimage" src="../../../banner1_960x560.jpg" />
+      </category-item>
+      <category-item class="categories" on-tap="_categorySelected"
+                     href="/about" label="And yet another category">
+        <img class="testimage" src="../../../banner1_960x560.jpg" />
+      </category-item>
+      <category-item class="categories" on-tap="_categorySelected"
+                     href="/about" label="Another other category">
+        <img class="testimage" src="../../../banner1_960x560.jpg" />
+      </category-item>
+    </div>
   </template>
 
   <script>
