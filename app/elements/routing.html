@@ -20,6 +20,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.scrollPageToTop(false);
     });
 
+    page('/category/', function () {
+      app.route = 'category';
+      app.scrollPageToTop(true);
+    });
+
     page('/about', function () {
       app.route = 'about';
       app.scrollPageToTop(true);
