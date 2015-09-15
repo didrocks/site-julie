@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/cascaded-animation.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/ripple-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/transform-animation.html">
 
@@ -73,12 +74,13 @@
                   }
                 },
                 'exit': [{
+                  name: 'ripple-animation',
+                  id: 'ripple',
+                  fromPage: this
+                }, {
                   name: 'hero-animation',
                   id: 'hero',
                   fromPage: this,
-                }, {
-                  name: 'fade-out-animation',
-                  node: this,
                 }],
               };
             }
@@ -104,7 +106,12 @@
         _categorySelected: function(event) {
           var target = event.currentTarget;
           this.sharedElements = {
-            'hero': target
+            'hero': target,
+            'ripple': target
+          };
+          this.animationConfig['exit'][0].gesture = {
+            x: event.detail.x,
+            y: event.detail.y
           };
         },
       });

@@ -3,11 +3,10 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/ripple-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
-
-<link rel="import" href="../items/category-background.html">
 
 <dom-module id="category-page">
   <template>
@@ -17,21 +16,17 @@
         display: block;
       }
 
-      #maintext {
-        /* the hero has an index of 10000 and it's background for us */
-        z-index: 10001;
-      }
-
-      .content {
-        padding-style: 16px;
+      #background {
+        z-index: -1;
+        background-color: orange;
       }
     </style>
 
     <!-- wrapper div to get height as the parent page has no height due to position: absolute (neon-animated-pages) -->
     <div class="relative layout vertical">
-      <category-background id="hero" label="My first category" class="fit">
-      </category-background>
-      <div id="maintext" class="padder">
+      <!-- only the top element should have color for ripple effet to animate border-radius properly -->
+      <div id="background" class="fit"></div>
+      <div id="content" class="padder">
         <h1 id="license">License</h1>
         <p>Everything in this repo is BSD style license unless otherwise specified.</p>
         <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
@@ -79,13 +74,16 @@
             value: function() {
               return {
                 'entry': [{
+                  name: 'ripple-animation',
+                  id: 'ripple',
+                  toPage: this,
+                }, {
                   name: 'hero-animation',
                   id: 'hero',
                   toPage: this,
-                }, {
-                  name: 'fade-in-animation',
-                  node: this,
-                  timing: {duration: 3000}
+                  timing: {
+                    delay: 150,
+                  }
                 }],
                 'exit': {
                   name: 'fade-out-animation',
@@ -97,7 +95,8 @@
           sharedElements: {
             value: function() {
               return {
-                'hero': this.$.hero
+                'ripple': this.$.background,
+                'hero': this.$.content
               };
             }
           },
