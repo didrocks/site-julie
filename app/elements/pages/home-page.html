@@ -11,6 +11,7 @@
 
 <dom-module id="home-page">
   <template>
+    <style include="shared-styles"></style>
     <style>
       :host {
         display: block;
@@ -23,7 +24,7 @@
       }
 
     </style>
-    <div class="layout wrap inline center-center">
+    <div class="padder layout wrap inline center-center">
       <category-item class="categories" on-tap="_categorySelected"
                      href="/category" label="My first category">
         <img class="testimage" src="../../../banner1_960x560.jpg" />

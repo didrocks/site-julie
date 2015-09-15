@@ -11,6 +11,7 @@
 
 <dom-module id="category-page">
   <template>
+    <style include="shared-styles"></style>
     <style>
       :host {
         display: block;
@@ -30,7 +31,7 @@
     <div class="relative layout vertical">
       <category-background id="hero" label="My first category" class="fit">
       </category-background>
-      <div id="maintext">
+      <div id="maintext" class="padder">
         <h1 id="license">License</h1>
         <p>Everything in this repo is BSD style license unless otherwise specified.</p>
         <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>

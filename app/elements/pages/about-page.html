@@ -9,6 +9,7 @@
 
 <dom-module id="about-page">
   <template>
+    <style include="shared-styles"></style>
     <style>
       :host {
         display: block;
@@ -45,7 +46,8 @@
       }
     </style>
 
-    <paper-material id="hero2" elevation="1" class="paper-font-body2">
+    <!-- TODO: set padder on host if possible? -->
+    <paper-material id="hero2" elevation="1" class="padder paper-font-body2">
       <h1 id="license">License</h1>
       <p>Everything in this repo is BSD style license unless otherwise specified.</p>
       <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>

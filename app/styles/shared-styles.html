@@ -6,6 +6,13 @@
         @apply(--paper-font-display2);
       }
 
+      .padder {
+        /* we don't set padding on pages directly as elements can have background element
+         * which should match page size
+         */
+        padding: 48px 62px;
+      }
+
       @media (max-width: 600px) {
         .page-title {
           font-size: 24px!important;
