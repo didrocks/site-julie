@@ -7,6 +7,8 @@
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
 
+<link rel="import" href="../items/category-background.html">
+
 <dom-module id="category-page">
   <template>
     <style>
@@ -14,8 +16,9 @@
         display: block;
       }
 
-      .hero {
-        width: 100%;
+      #maintext {
+        /* the hero has an index of 10000 and it's background for us */
+        z-index: 10001;
       }
 
       .content {
@@ -23,11 +26,11 @@
       }
     </style>
 
-    <div>
-      <category-item id="hero" label="My first category" class="fit" fullpage>
-        <img class="testimage" src="../../../banner1_960x560.jpg" />
-      </category-item>
-      <div class="content fit">
+    <!-- wrapper div to get height as the parent page has no height due to position: absolute (neon-animated-pages) -->
+    <div class="relative layout vertical">
+      <category-background id="hero" label="My first category" class="fit">
+      </category-background>
+      <div id="maintext">
         <h1 id="license">License</h1>
         <p>Everything in this repo is BSD style license unless otherwise specified.</p>
         <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>

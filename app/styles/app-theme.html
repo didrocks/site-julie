@@ -80,11 +80,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform-origin: left center;
   }
 
-  /* Force expanding containing only flex elements */
-  neon-animated-pages > * {
-    position: relative;
-  }
-
   /* Breakpoints */
 
   /* Small */
@@ -106,7 +101,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Tablet+ */
   @media (min-width: 601px) {
     neon-animated-pages > *:not(.fullpage) {
-      padding: 48px 62px;
+      /*padding: 48px 62px; padding should be on the element under the page wrapper, not the page itself
+      (so common style?).*/
     }
   }
 
