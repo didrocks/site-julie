@@ -106,36 +106,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                srcpattern="images/banner/banner1_::::.jpg" alt="Paint banner"></img-fixheight>
 
         <!-- Main Content -->
-        <div class="content layout vertical">
-          <neon-animated-pages class="flex" attr-for-selected="data-route" selected="[[route]]">
+        <neon-animated-pages class="content" attr-for-selected="data-route" selected="[[route]]">
 
-            <home-page data-route="home">
-            </home-page>
+          <home-page data-route="home">
+          </home-page>
 
-            <category-page data-route="category" class="fullpage">
-            </category-page>
+          <category-page data-route="category">
+          </category-page>
 
-            <about-page data-route="about">
-            </about-page>
+          <about-page data-route="about">
+          </about-page>
 
-            <section data-route="user-info">
-              <paper-material elevation="1">
-                <h2 class="page-title">
-                User:<span>{{params.name}}</span>
-                </h2>
-                <div>This is <span>{{params.name}}</span>'s section</div>
-              </paper-material>
-            </section>
+          <section data-route="user-info">
+            <paper-material elevation="1">
+              <h2 class="page-title">
+              User:<span>{{params.name}}</span>
+              </h2>
+              <div>This is <span>{{params.name}}</span>'s section</div>
+            </paper-material>
+          </section>
 
-            <section data-route="contact">
-              <paper-material elevation="1">
-                <h2 class="page-title">Contact</h2>
-                <p>This is the contact section</p>
-              </paper-material>
-            </section>
+          <section data-route="contact">
+            <paper-material elevation="1">
+              <h2 class="page-title">Contact</h2>
+              <p>This is the contact section</p>
+            </paper-material>
+          </section>
 
-          </neon-animated-pages>
-        </div>
+        </neon-animated-pages>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
 
