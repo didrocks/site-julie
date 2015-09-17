@@ -8,8 +8,11 @@
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
 
 <dom-module id="category-page">
+
+  <link rel="import" type="css" href="../../../bower_components/neon-animation/demo/shared.css">
   <template>
     <style include="shared-styles"></style>
+
     <style>
       :host {
         display: block;
@@ -17,47 +20,73 @@
 
       #background {
         z-index: -1;
-        background-color: pink;
+      }
+
+      #hero {
+        height: 1000px;
+        padding: 8px;
+      }
+
+      .tile {
+        display: inline-block;
+        float: left;
+        vertical-align: top;
+        width: calc(100% / 6);
+        height: calc(100% / 3);
+
+        @apply(--paper-font-title);
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+
+      .tile:nth-of-type(1) {
+        width: calc(100% / 3);
+        height: calc(100% / 3 * 2);
+      }
+
+      .tile:nth-of-type(4) {
+        width: calc(100% / 3);
+      }
+
+      .tile:nth-of-type(5) {
+        width: calc(100% / 3);
+        height: calc(100% / 3 * 2);
+      }
+
+      .tile:nth-of-type(8) {
+        width: calc(100% / 3);
+        height: calc(100% / 3);
+      }
+
+      .tile:nth-of-type(9) {
+        position: absolute;
+        top: calc(100% / 3 * 2);
+        left: 0;
+        width: calc(100% / 6);
+        height: calc(100% / 3);
+      }
+
+      .tile:nth-of-type(10) {
+        position: absolute;
+        top: calc(100% / 3 * 2);
+        left: calc(100% / 6);;
+        width: calc(100% / 6);
+        height: calc(100% / 3);
       }
     </style>
 
     <!-- wrapper div to get height as the parent page has no height due to position: absolute (neon-animated-pages) -->
     <div class="relative layout vertical">
       <!-- only the top element should have color for ripple effet to animate border-radius properly -->
-      <div id="background" class="fit"></div>
+      <div id="background" style$="[[_computeBackgroundClass(backgroundcolor)]]" class="fit"></div>
       <div id="content" class="padder layout vertical">
         <paper-material id="hero" elevation=1>
-          <h1 id="license">License</h1>
-          <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-          <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-          <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-          <ul>
-          <li>Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.</li>
-          <li>Redistributions in binary form must reproduce the above
-          copyright notice, this list of conditions and the following disclaimer
-          in the documentation and/or other materials provided with the
-          distribution.</li>
-          <li>Neither the name of <a href="oo">Google Inc.</a> nor the names of its
-          contributors may be used to endorse or promote products derived from
-          this software without specific prior written permission.</li>
-          </ul>
-          <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-          <h1 id="license">License</h1>
-          <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-          <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-          <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-          <ul>
-          <li>Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.</li>
-          <li>Redistributions in binary form must reproduce the above
-          copyright notice, this list of conditions and the following disclaimer
-          in the documentation and/or other materials provided with the
-          distribution.</li>
-          <li>Neither the name of <a href="oo">Google Inc.</a> nor the names of its
-          contributors may be used to endorse or promote products derived from
-          this software without specific prior written permission.</li>
-          </ul>
+          <h1>Category title</h1>
+          <template class="oo" is="dom-repeat" items="[[config]]">
+            <div class$="[[_computeTileClass(item.color)]]">
+              <span>[[item.value]]</span>
+            </div>
+          </template>
         </paper-material>
       </div>
     </div>
@@ -73,6 +102,30 @@
         behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
 
         properties: {
+
+          config: {
+            type: Array,
+            value: function() {
+              return [
+                {value: 1, color: 'blue'},
+                {value: 2, color: 'red'},
+                {value: 3, color: 'blue'},
+                {value: 4, color: 'green'},
+                {value: 5, color: 'yellow'},
+                {value: 6, color: 'blue'},
+                {value: 7, color: 'red'},
+                {value: 8, color: 'green'},
+                {value: 9, color: 'yellow'},
+                {value: 10, color: 'red'}
+              ];
+            }
+          },
+
+          backgroundcolor: {
+            type: String,
+            value: 'pink',
+          },
+
           animationConfig: {
             value: function() {
               return {
@@ -103,6 +156,14 @@
               };
             }
           },
+        },
+
+        _computeBackgroundClass: function(backgroundcolor) {
+          return 'background-color: ' + backgroundcolor + ';';
+        },
+
+        _computeTileClass: function(color) {
+          return 'tile ' + color + '-300' + ' painting';
         },
       });
     })();
