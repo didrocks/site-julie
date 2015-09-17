@@ -34,24 +34,29 @@
     (function () {
       'use strict';
 
-      Polymer({
-        is: 'category-item',
+      class CategoryItem {
+        beforeRegister() {
+          this.is = 'category-item';
+          this.properties = {
+            elevation: {
+              type: Number,
+              value: 1
+            },
+            href: String,
+            label: String,
+          };
+        }
 
-        properties: {
-          elevation: {
-            type: Number,
-            value: 1
-          },
-          href: String,
-          label: String,
-        },
-        _containerHovered: function() {
+        _containerHovered() {
           this.$.container.elevation = 3;
-        },
-        _containerExited: function() {
+        }
+
+        _containerExited() {
           this.$.container.elevation = this.elevation;
-        },
-      });
+        }
+      }
+
+      Polymer(CategoryItem);
     })();
   </script>
 
