@@ -15,29 +15,6 @@
         padding: 10px;
       }
 
-      #titlewrapper {
-        opacity: 0;
-        transition: all 500ms ease-out;
-        /* do not trigger pointer events so that on-mouseover and on-mouseout are triggered by the container */
-        pointer-events: none;
-      }
-
-      a:hover #titlewrapper {
-        opacity: 1;
-      }
-
-      .line {
-        height: 2px;
-        width: 0%;
-        margin: 15px auto;
-        background-color: #ffffff;
-        transition: all 500ms ease-out;
-      }
-
-      a:hover .line {
-        width: 100%;
-      }
-
       paper-material > ::content img {
         display: block;
         max-width: 100%;
@@ -48,11 +25,7 @@
                     on-mouseover="_containerHovered" on-mouseout="_containerExited">
       <a href="[[href]]" class="layout vertical">
         <content select="img"></content>
-        <div id="titlewrapper" class="fit layout vertical center center-justified">
-          <div class="line"></div>
-          <div>[[label]]</div>
-          <div class="line"></div>
-        </div>
+        <h1>{{label}}</h1>
       </a>
     </paper-material>
   </template>
