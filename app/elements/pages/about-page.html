@@ -71,39 +71,41 @@
     (function () {
       'use strict';
 
-      Polymer({
-        is: 'about-page',
-
-        behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
-
-        properties: {
-          animationConfig: {
-            value: function() {
-              return {
-                'entry': [{
-                  name: 'hero-animation',
-                  id: 'hero',
-                  toPage: this,
-                }, {
-                  name: 'fade-in-animation',
-                  node: this,
-                }],
-                'exit': {
-                  name: 'fade-out-animation',
-                  node: this,
-                }
-              };
+      class AboutPage {
+        get behaviors() { return [Polymer.NeonSharedElementAnimatableBehavior]; }
+        beforeRegister() {
+          this.is = 'about-page';
+          this.properties = {
+            animationConfig: {
+              value: function() {
+                return {
+                  'entry': [{
+                    name: 'hero-animation',
+                    id: 'hero',
+                    toPage: this,
+                  }, {
+                    name: 'fade-in-animation',
+                    node: this,
+                  }],
+                  'exit': {
+                    name: 'fade-out-animation',
+                    node: this,
+                  }
+                };
+              }
+            },
+            sharedElements: {
+              value: function() {
+                return {
+                  'hero': this.$.hero2
+                };
+              }
             }
-          },
-          sharedElements: {
-            value: function() {
-              return {
-                'hero': this.$.hero2
-              };
-            }
-          }
-        },
-      });
+          };
+        }
+      }
+
+      Polymer(AboutPage);
     })();
   </script>
 
