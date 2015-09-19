@@ -96,75 +96,73 @@
     (function () {
       'use strict';
 
-      class CategoryPage {
-        get behaviors() { return [Polymer.NeonSharedElementAnimatableBehavior]; }
-        beforeRegister() {
-          this.is = 'category-page';
-          this.properties = {
-            config: {
-              type: Array,
-              value: function() {
-                return [
-                  {value: 1, color: 'blue'},
-                  {value: 2, color: 'red'},
-                  {value: 3, color: 'blue'},
-                  {value: 4, color: 'green'},
-                  {value: 5, color: 'yellow'},
-                  {value: 6, color: 'blue'},
-                  {value: 7, color: 'red'},
-                  {value: 8, color: 'green'},
-                  {value: 9, color: 'yellow'},
-                  {value: 10, color: 'red'}
-                ];
-              }
-            },
-            backgroundcolor: {
-              type: String,
-              value: 'pink',
-            },
-            animationConfig: {
-              value: function() {
-                return {
-                  'entry': [{
-                    name: 'ripple-animation',
-                    id: 'ripple',
-                    toPage: this,
-                  }, {
-                    name: 'hero-animation',
-                    id: 'hero',
-                    toPage: this,
-                    timing: {
-                      delay: 150,
-                    },
-                  }],
-                  'exit': {
-                    name: 'fade-out-animation',
-                    node: this,
+      Polymer({
+        is: 'category-page',
+
+        behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+
+        properties: {
+          config: {
+            type: Array,
+            value: function() {
+              return [
+                {value: 1, color: 'blue'},
+                {value: 2, color: 'red'},
+                {value: 3, color: 'blue'},
+                {value: 4, color: 'green'},
+                {value: 5, color: 'yellow'},
+                {value: 6, color: 'blue'},
+                {value: 7, color: 'red'},
+                {value: 8, color: 'green'},
+                {value: 9, color: 'yellow'},
+                {value: 10, color: 'red'}
+              ];
+            }
+          },
+          backgroundcolor: {
+            type: String,
+            value: 'pink',
+          },
+          animationConfig: {
+            value: function() {
+              return {
+                'entry': [{
+                  name: 'ripple-animation',
+                  id: 'ripple',
+                  toPage: this,
+                }, {
+                  name: 'hero-animation',
+                  id: 'hero',
+                  toPage: this,
+                  timing: {
+                    delay: 150,
                   },
-                };
-              }
-            },
-            sharedElements: {
-              value: function() {
-                return {
-                  'ripple': this.$.background,
-                  'hero': this.$.hero
-                };
-              }
-            },
-          };
-        }
+                }],
+                'exit': {
+                  name: 'fade-out-animation',
+                  node: this,
+                },
+              };
+            }
+          },
+          sharedElements: {
+            value: function() {
+              return {
+                'ripple': this.$.background,
+                'hero': this.$.hero
+              };
+            }
+          },
+        },
 
-        _computeBackgroundClass(backgroundcolor) {
+        _computeBackgroundClass: function(backgroundcolor) {
           return 'background-color: ' + backgroundcolor + ';';
-        }
+        },
 
-        _computeTileClass(color) {
+        _computeTileClass: function(color) {
           return 'tile ' + color + '-300' + ' painting';
-        }
-      }
-
-      Polymer(CategoryPage);
+        },
+      });
     })();
   </script>
 

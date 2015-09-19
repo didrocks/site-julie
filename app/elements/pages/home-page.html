@@ -52,60 +52,58 @@
     (function () {
       'use strict';
 
-      class HomePage {
-        get behaviors() {
-          return [
+      Polymer({
+        is: 'home-page',
+
+        behaviors: [
             Polymer.NeonSharedElementAnimatableBehavior,
             Polymer.NeonAnimationRunnerBehavior,
-          ];
-        }
-        beforeRegister() {
-          this.is = 'home-page';
-          this.properties = {
-            animationConfig: {
-              value: function() {
-                return {
-                  'entry': {
-                    name: 'cascaded-animation',
-                    animation: 'transform-animation',
-                    transformFrom: 'translateY(100%)',
-                    transformTo: 'none',
-                    timing: {
-                      delay: 50,
-                    }
-                  },
-                  'exit': [{
-                    name: 'ripple-animation',
-                    id: 'ripple',
-                    fromPage: this
-                  }, {
-                    name: 'hero-animation',
-                    id: 'hero',
-                    fromPage: this,
-                  }],
-                };
-              }
-            },
-          };
-        }
+        ],
 
-        attached() {
+        properties: {
+          animationConfig: {
+            value: function() {
+              return {
+                'entry': {
+                  name: 'cascaded-animation',
+                  animation: 'transform-animation',
+                  transformFrom: 'translateY(100%)',
+                  transformTo: 'none',
+                  timing: {
+                    delay: 50,
+                  }
+                },
+                'exit': [{
+                  name: 'ripple-animation',
+                  id: 'ripple',
+                  fromPage: this
+                }, {
+                  name: 'hero-animation',
+                  id: 'hero',
+                  fromPage: this,
+                }],
+              };
+            }
+          },
+        },
+
+        attached: function() {
           // ensure that this dom is ready
           this.async(function() {
             let nodeList = Polymer.dom(this.root).querySelectorAll('.categories');
             this.animationConfig.entry.nodes = Array.prototype.slice.call(nodeList);
           });
-        }
+        },
 
         /* This function is used for the first load animation once the dom is ready.
          * Next page switch will trigger automatically (through neon-animated-pages) the same "entry" animation.
          */
-        show() {
+        show: function() {
           this.style.visibility = 'visible';
           this.playAnimation('entry');
-        }
+        },
 
-        _categorySelected(event) {
+        _categorySelected: function(event) {
           let target = event.currentTarget;
           this.sharedElements = {
             'hero': target,
@@ -115,10 +113,8 @@
             x: event.detail.x,
             y: event.detail.y
           };
-        }
-      }
-
-      Polymer(HomePage);
+        },
+      });
     })();
   </script>
 
