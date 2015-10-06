@@ -211,7 +211,7 @@
             // check which paintings can be a direct size match (as the dict is ordered, pick first)
             let foundOne = false;
             for (let i=0; i < remainingPaintings.length; i++) {
-              let painting = remainingPaintings[i];
+              let painting = Object.create(remainingPaintings[i]);
 
               // found a good match
               if (painting.width <= currWidth) {
