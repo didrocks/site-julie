@@ -1,5 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
 <dom-module id="paintings-category">
   <template>
     <style include="shared-styles"></style>
@@ -28,6 +30,10 @@
       Polymer({
         is: 'paintings-category',
 
+        behaviors: [
+          Polymer.IronResizableBehavior,
+        ],
+
         properties: {
           paintings: Array,
 
@@ -48,14 +54,10 @@
 
           _numCols: {
             type: Number,
-            readOnly: true,
-            value: 3, // TODO: find a way to define at least with MINNUMCOLS here
           },
-          // TODO: will be based on width on num col
+
           _unitSize: {
             type: Number,
-            readOnly: true,
-            value: 100,
           },
 
           _positionnedPaintings: {
@@ -70,6 +72,26 @@
             type: Object,
             computed: '_computePossibleRatios(_numCols)',
           },
+        },
+
+        listeners: {
+          'iron-resize': '_onIronResize'
+        },
+
+        _onIronResize: function() {
+          let width = this.parentNode.offsetWidth;
+          // TODO: set real breakpoints here
+          if (width < 500) {
+            this._numCols = this.MINNUMCOLS;
+          } else if (width < 800) {
+            this._numCols = 4;
+          } else {
+            this._numCols = 5;
+          }
+          console.log('after _numcols changed')
+          this._unitSize = width / this._numCols;
+          console.log('after _unitSize changed')
+          // TODO: CHECK FOR TRANSACTION. We don't want to rebuild everytime there is a simple change
         },
 
         _stylefor: (p) => {
