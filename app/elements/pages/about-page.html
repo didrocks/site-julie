@@ -6,6 +6,8 @@
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/fade-out-animation.html">
 
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
 <dom-module id="about-page">
   <template>
     <style include="shared-styles"></style>
@@ -28,7 +30,13 @@
       Polymer({
         is: 'about-page',
 
-        behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
+        behaviors: [
+          Polymer.NeonSharedElementAnimatableBehavior,
+          /* set this element as being resizable to propagate to its subelements (issue on neon-animated-pages)
+             see https://github.com/PolymerElements/neon-animation/issues/57.
+           */
+          Polymer.IronResizableBehavior,
+        ],
 
         properties: {
           paintings: {
