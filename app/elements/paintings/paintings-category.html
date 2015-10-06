@@ -202,6 +202,7 @@
             if (painting.width > numCols) {
               console.log(`${painting.src} is too large to match ${numCols} columns. Not displaying it.`);
               remainingPaintings.splice(i, 1);
+              i--;
             }
           }
 
