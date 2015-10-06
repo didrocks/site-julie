@@ -1,6 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../paintings/paintings-category.html">
 
 <link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../../bower_components/neon-animation/animations/hero-animation.html">
@@ -15,56 +14,11 @@
         display: block;
       }
 
-      paper-material {
-        border-radius: 2px;
-        /* height: 100%; TODO: open a bug about it: when changing from default template from iron-pages to
-        neon-animated-pages as the embeeding element, the height is then 0 */
-        padding: 16px 0 16px 0;
-        width: calc(98.66% - 16px);
-        margin: 16px auto;
-        background: white;
-      }
-
-      /* Small */
-      @media (max-width: 600px) {
-        paper-material {
-          width: calc(97.33% - 32px);
-          padding-left: 16px;
-          padding-right: 16px;
-        }
-      }
-
-      /* Tablet+ */
-      @media (min-width: 601px) {
-
-        paper-material {
-          width: calc(98% - 46px);
-          margin-bottom: 32px;
-          padding-left: 30px;
-          padding-right: 30px;
-        }
-      }
     </style>
 
-    <!-- TODO: set padder on host if possible? -->
-    <paper-material id="hero2" elevation="1" class="padder paper-font-body2">
-      <h1 id="license">License</h1>
-      <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-      <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-      <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-      <ul>
-      <li>Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.</li>
-      <li>Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following disclaimer
-      in the documentation and/or other materials provided with the
-      distribution.</li>
-      <li>Neither the name of Google Inc. nor the names of its
-      contributors may be used to endorse or promote products derived from
-      this software without specific prior written permission.</li>
-      </ul>
-      <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-    </paper-material>
+    <div id="wrapper">
+      <paintings-category paintings={{paintings}}></paintings-category>
+    </div>
   </template>
 
   <script>
@@ -77,31 +31,77 @@
         behaviors: [Polymer.NeonSharedElementAnimatableBehavior],
 
         properties: {
-          animationConfig: {
-            value: function() {
-              return {
-                'entry': [{
-                  name: 'hero-animation',
-                  id: 'hero',
-                  toPage: this,
-                }, {
-                  name: 'fade-in-animation',
-                  node: this,
-                }],
-                'exit': {
-                  name: 'fade-out-animation',
-                  node: this,
-                }
-              };
-            }
+          paintings: {
+            type: Array,
+            value: function() { return [
+              {
+                width: 5000,
+                height: 900,
+                src: 'images/img0.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 900,
+                src: 'images/img1.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 1000,
+                src: 'images/img2.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 1400,
+                src: 'images/img8.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 1500,
+                src: 'images/img9.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 1600,
+                src: 'images/img10.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 2000,
+                src: 'images/img3.jpg',
+                srcset: '',
+              },
+              {
+                width: 3000,
+                height: 2500,
+                src: 'images/img4.jpg',
+                srcset: '',
+              },
+              {
+                width: 300,
+                height: 300,
+                src: 'images/img5.jpg',
+                srcset: '',
+              },
+              {
+                width: 1100,
+                height: 3000,
+                src: 'images/img6.jpg',
+                srcset: '',
+              },
+              {
+                width: 900,
+                height: 3000,
+                src: 'images/img7.jpg',
+                srcset: '',
+              },];
+            },
           },
-          sharedElements: {
-            value: function() {
-              return {
-                'hero': this.$.hero2
-              };
-            }
-          }
         },
       });
     })();
