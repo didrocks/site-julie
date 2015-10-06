@@ -1,0 +1,295 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="paintings-category">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      .paintingElem {
+        position: absolute;
+      }
+    </style>
+
+    <div id="imagespatchwork" style$="{{_pageHeight}}">
+      <template is="dom-repeat" items="[[_positionnedPaintings]]">
+        <div class="paintingElem" style$={{_stylefor(item)}}></div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'paintings-category',
+
+        properties: {
+          paintings: Array,
+
+          MINHEIGHT: {
+            type: Number,
+            value: 900,
+          },
+
+          MINNUMCOLS: {
+            type: Number,
+            value: 3,
+          },
+
+          _pageHeight: {
+            type: String,
+            value: 'height: 900px',
+          },
+
+          _numCols: {
+            type: Number,
+            readOnly: true,
+            value: 3, // TODO: find a way to define at least with MINNUMCOLS here
+          },
+          // TODO: will be based on width on num col
+          _unitSize: {
+            type: Number,
+            readOnly: true,
+            value: 100,
+          },
+
+          _positionnedPaintings: {
+            type: Array,
+            computed: '_buildPaintingsPositions(_orderedPaintings, _numCols, _unitSize)',
+          },
+          _orderedPaintings: {
+            type: Array,
+            computed: '_orderPaintings(paintings, _unitSize, _ratios)',
+          },
+          _ratios: {
+            type: Object,
+            computed: '_computePossibleRatios(_numCols)',
+          },
+        },
+
+        _stylefor: (p) => {
+          return `left: ${p.x}px; top: ${p.y}px; width: ${p.width}px; height: ${p.height}px;
+                  background-color: ${p.color};`;
+        },
+
+        /**
+          * compute a dict of possible ratios that the layout offer.
+          * Remove duplicate by keeping the minimum match (1x1 will be preferred to 3x3)
+          */
+        _computePossibleRatios(maxwidth) {
+          let resultingRatios = {};
+          for (let width=1; width < maxwidth+1; width++) {
+            for (let height=1; height < maxwidth+1; height++) {
+              let ratio = width / height;
+              // if the ratio already exist, we have a minimum match
+              if (resultingRatios[ratio]) {
+                  continue;
+              }
+              resultingRatios[ratio] = {width, height};
+            }
+          }
+          return resultingRatios;
+        },
+
+        /**
+          * order paintings by width relative to height ratio. Add a normalized width and height as well
+          */
+        _orderPaintings: function(paintings, _unitSize, ratios) {
+          let normalizedPaintings = [];
+
+          // get ratios from highest to smallest
+          let orderedRatios = Object.keys(ratios).sort((a, b) => a - b);
+
+          for (let painting of paintings) {
+
+            let paintingRatio = painting.width / painting.height;
+            let matchHeight = false;
+            // the min is the first ratio, even if smaller (but matchHeight will be false and we will match width)
+            let currRatio = orderedRatios[0];
+            for (let ratio of orderedRatios) {
+              if (ratio > paintingRatio) {
+                break;
+              }
+              // height will be the minimal match for the picture
+              matchHeight = true;
+              currRatio = ratio;
+            }
+            paintingRatio = currRatio;
+            let normWidth = ratios[paintingRatio].width;
+            let normHeight = ratios[paintingRatio].height;
+
+            let normalizedPainting = {
+              height: normHeight,
+              width: normWidth,
+              matchHeight: matchHeight,
+              src: painting.src,
+              srcset: painting.srcset,
+            };
+
+            // reorder from larger and highest to smaller
+            let inserted = false;
+            for (let i=0; i < normalizedPaintings.length; i++) {
+              if ((normalizedPainting.width > normalizedPaintings[i].width) ||
+                  (normalizedPainting.width === normalizedPaintings[i].width) &&
+                  (normalizedPainting.height > normalizedPaintings[i].height)) {
+                    normalizedPaintings.splice(i, 0, normalizedPainting);
+                    inserted = true;
+                    break;
+              }
+            }
+            // add as last item
+            if (!inserted) {
+              normalizedPaintings.push(normalizedPainting);
+            }
+          }
+          return normalizedPaintings;
+        },
+
+        _buildPaintingsPositions(orderedPaintings, numCols, _unitSize) {
+          let paintingsPositions = [];
+
+          let extendArrayIfNeeded = (array, lineNum) => {
+            if (lineNum === array.length) {
+              array[lineNum] = new Array(array[lineNum-1].length);
+            }
+          };
+
+          // internal 2D array to know what cases are taken or free
+          let internalHolder = [];
+          internalHolder[0] = new Array(numCols);
+          let currLine = 0;
+          let currCol = 0;
+
+          let maxScaledWidth = numCols;
+          // limit to 2/3 of the max cols if we have many columns available to avoid picture expansion being too large
+          if (numCols > 3) {
+            maxScaledWidth = Math.floor(2 / 3 * maxScaledWidth);
+          }
+
+          // soft copy for paintings, ordered from larger to narrower, not positionned yet
+          let remainingPaintings = orderedPaintings.slice();
+
+          // first, we remove paintings that can't fit into our grid
+          for (let i=0; i < remainingPaintings.length; i++) {
+            let painting = remainingPaintings[i];
+            if (painting.width > numCols) {
+              console.log(`${painting.src} is too large to match ${numCols} columns. Not displaying it.`);
+              remainingPaintings.splice(i, 1);
+            }
+          }
+
+          // position paintings while we still have some elements to position
+          while(remainingPaintings.length > 0) {
+
+            // move to first free column of the current line, if none, move to next line
+            while (currCol < numCols) {
+              if (!internalHolder[currLine][currCol]) {
+                break;
+              }
+              currCol++;
+            }
+            if (currCol === numCols) {
+              currCol = 0;
+              currLine++;
+              // add a new line to internalHolder if not created yet
+              extendArrayIfNeeded(internalHolder, currLine);
+              // search first free column on next line
+              continue;
+            }
+
+            // count remaining adjacent free cols
+            let currWidth;
+            for (let i=currCol; i < numCols && !internalHolder[currLine][i]; ++i) {
+              currWidth = i - currCol + 1;
+            }
+
+            // check which paintings can be a direct size match (as the dict is ordered, pick first)
+            let foundOne = false;
+            for (let i=0; i < remainingPaintings.length; i++) {
+              let painting = remainingPaintings[i];
+
+              // found a good match
+              if (painting.width <= currWidth) {
+                foundOne = true;
+                remainingPaintings.splice(i, 1);
+
+                // if size is smaller, try to check if we can scale it at max
+                // cap it with the allowed scaled width
+                let maxCurrentWidth = Math.min(maxScaledWidth, currWidth);
+                if (painting.width < maxCurrentWidth) {
+                  for (let j=maxCurrentWidth; j > painting.width; j--) {
+                    let scale = maxCurrentWidth / painting.width;
+                    if (scale%1 === 0) {
+                      painting.width = painting.width * scale;
+                      painting.height = painting.height * scale;
+                      break;
+                    }
+                  }
+                }
+
+                // Mark our array as being busy for those spots
+                for (let j=0; j < painting.width; j++) {
+                  for (let k=0; k < painting.height; k++) {
+                    extendArrayIfNeeded(internalHolder, currLine+k);
+                    internalHolder[currLine+k][currCol+j] = true;
+                  }
+                }
+                paintingsPositions.push(new PaintingElem(currCol * _unitSize, currLine * _unitSize,
+                                                         painting.width * _unitSize, painting.height * _unitSize,
+                                                         '#000', painting.src, painting.srcset));
+                currCol += painting.width;
+                break;
+              }
+            }
+
+            // we didn't find any match, go to next column
+            if(!foundOne) {
+              currCol++;
+            }
+          }
+
+          // now, iterate over the gaps to fill with solid colors
+          for (let i=0; i < internalHolder.length; i++) {
+            for (let j=0; j < internalHolder[i].length; j++) {
+              // missing match for this elem
+              if (!internalHolder[i][j]) {
+                // internal color
+                let color = '#F00';
+                // change the color on the edge to create constrast with background
+                if (i === 0 || j === 0 || i === internalHolder.length-1 || j === internalHolder[i].length-1) {
+                  color = '#0F0';
+                }
+                // create a one wide and high unit with that color
+                paintingsPositions.push(new PaintingElem(j * _unitSize, i * _unitSize, _unitSize, _unitSize,
+                                                         color, '', ''));
+              }
+            }
+          }
+
+          // compute element height
+          let height = internalHolder.length * _unitSize;
+          this._pageHeight = `height: ${height}px`;
+
+          return paintingsPositions;
+        },
+      });
+
+      class PaintingElem {
+        constructor(x, y, width, height, color, src='', srcset='') {
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.src = src;
+          this.srcset = srcset;
+          this.color = color;
+        }
+      }
+    })();
+  </script>
+</dom-module>
