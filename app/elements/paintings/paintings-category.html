@@ -62,15 +62,7 @@
 
           _positionnedPaintings: {
             type: Array,
-            computed: '_buildPaintingsPositions(_orderedPaintings, _numCols, _unitSize)',
-          },
-          _orderedPaintings: {
-            type: Array,
-            computed: '_orderPaintings(paintings, _unitSize, _ratios)',
-          },
-          _ratios: {
-            type: Object,
-            computed: '_computePossibleRatios(_numCols)',
+            computed: '_buildPaintingsPositions(paintings, _unitSize)',
           },
         },
 
@@ -80,6 +72,10 @@
 
         _onIronResize: function() {
           let width = this.parentNode.offsetWidth;
+          // initial load shouldn't compute anything
+          if (width === 0) {
+            return ;
+          }
           // TODO: set real breakpoints here
           if (width < 500) {
             this._numCols = this.MINNUMCOLS;
@@ -121,10 +117,11 @@
         /**
           * order paintings by width relative to height ratio. Add a normalized width and height as well
           */
-        _orderPaintings: function(paintings, _unitSize, ratios) {
+        _orderPaintings: function(paintings, numCols) {
           let normalizedPaintings = [];
 
           // get ratios from highest to smallest
+          let ratios = this._computePossibleRatios(numCols);
           let orderedRatios = Object.keys(ratios).sort((a, b) => a - b);
 
           for (let painting of paintings) {
@@ -172,8 +169,14 @@
           return normalizedPaintings;
         },
 
-        _buildPaintingsPositions(orderedPaintings, numCols, _unitSize) {
+        _buildPaintingsPositions(paintings, unitSize) {
           let paintingsPositions = [];
+
+          // HACK: we don't want to depend on _unitSize and _numCols as it will trigger a rebuild twice.
+          // As both are by width when resized (unitSize and numCols depends on that), we know that numCols is set
+          // after unitSize which triggers the _buildPaintingsPositions (as well as input paintings)
+          let numCols = this._numCols;
+          let orderedPaintings = this._orderPaintings(paintings, numCols);
 
           let extendArrayIfNeeded = (array, lineNum) => {
             if (lineNum === array.length) {
@@ -262,8 +265,8 @@
                     internalHolder[currLine+k][currCol+j] = true;
                   }
                 }
-                paintingsPositions.push(new PaintingElem(currCol * _unitSize, currLine * _unitSize,
-                                                         painting.width * _unitSize, painting.height * _unitSize,
+                paintingsPositions.push(new PaintingElem(currCol * unitSize, currLine * unitSize,
+                                                         painting.width * unitSize, painting.height * unitSize,
                                                          '#000', painting.src, painting.srcset));
                 currCol += painting.width;
                 break;
@@ -288,16 +291,15 @@
                   color = '#0F0';
                 }
                 // create a one wide and high unit with that color
-                paintingsPositions.push(new PaintingElem(j * _unitSize, i * _unitSize, _unitSize, _unitSize,
+                paintingsPositions.push(new PaintingElem(j * unitSize, i * unitSize, unitSize, unitSize,
                                                          color, '', ''));
               }
             }
           }
 
           // compute element height
-          let height = internalHolder.length * _unitSize;
+          let height = internalHolder.length * unitSize;
           this._pageHeight = `height: ${height}px`;
-
           return paintingsPositions;
         },
       });
