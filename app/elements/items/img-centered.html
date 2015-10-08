@@ -1,0 +1,67 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="img-centered">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      div {
+        overflow: hidden;
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      div > img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .matchwidth {
+        width: 100%;
+      }
+      .matchheight {
+        height: 100%;
+      }
+    </style>
+    <div>
+      <img src$="[[src]]" srcset$="[[srcset]]" alt$="[[alt]]" class$="{{_computeImgClass(matchWidth)}}" />
+    </div>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      class ImgCentered {
+        beforeRegister() {
+          this.is = 'img-centered';
+          this.properties = {
+            src: String,
+            srcset: String,
+            alt: String,
+            matchWidth: {
+              type: Boolean,
+              value: false,
+            },
+          };
+        }
+
+        /* assign img class depending on image matching */
+        _computeImgClass(matchWidth) {
+            if (matchWidth) {
+              return 'matchwidth';
+            }
+            return 'matchheight';
+        }
+      }
+
+      Polymer(ImgCentered);
+    })();
+  </script>
+
+</dom-module>
