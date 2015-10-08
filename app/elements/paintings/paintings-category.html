@@ -2,6 +2,8 @@
 
 <link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 
+<link rel="import" href="../items/img-centered.html">
+
 <dom-module id="paintings-category">
   <template>
     <style include="shared-styles"></style>
@@ -18,7 +20,9 @@
 
     <div id="imagespatchwork" style$="{{_pageHeight}}">
       <template is="dom-repeat" items="[[_positionnedPaintings]]">
-        <div class="paintingElem" style$={{_stylefor(item)}}></div>
+        <img-centered class="paintingElem" style$={{_stylefor(item)}}
+                      src="../../banner1_960x560.jpg" srcset="" alt="Image content"
+                      match-width$="{{item.matchWidth}}"></img-centered>
       </template>
     </div>
   </template>
@@ -264,7 +268,7 @@
                 }
                 paintingsPositions.push(new PaintingElem(currCol * unitSize, currLine * unitSize,
                                                          painting.width * unitSize, painting.height * unitSize,
-                                                         '#000', painting.src, painting.srcset));
+                                                         '#000', painting.src, painting.srcset, painting.matchWidth));
                 currCol += painting.width;
                 break;
               }
@@ -288,8 +292,7 @@
                   color = '#0F0';
                 }
                 // create a one wide and high unit with that color
-                paintingsPositions.push(new PaintingElem(j * unitSize, i * unitSize, unitSize, unitSize,
-                                                         color, '', ''));
+                paintingsPositions.push(new PaintingElem(j * unitSize, i * unitSize, unitSize, unitSize, color));
               }
             }
           }
@@ -302,14 +305,15 @@
       });
 
       class PaintingElem {
-        constructor(x, y, width, height, color, src='', srcset='') {
+        constructor(x, y, width, height, color, src='', srcset='', matchWidth=true) {
           this.x = x;
           this.y = y;
           this.width = width;
           this.height = height;
+          this.color = color;
           this.src = src;
           this.srcset = srcset;
-          this.color = color;
+          this.matchWidth = matchWidth;
         }
       }
     })();
