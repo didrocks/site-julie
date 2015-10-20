@@ -305,7 +305,7 @@
       });
 
       class PaintingElem {
-        constructor(x, y, width, height, color, src='', srcset='', matchWidth=true) {
+        constructor(x, y, width, height, color, src='', srcset='', alt='', matchWidth=true) {
           this.x = x;
           this.y = y;
           this.width = width;
@@ -313,6 +313,7 @@
           this.color = color;
           this.src = src;
           this.srcset = srcset;
+          this.alt = alt;
           this.matchWidth = matchWidth;
         }
       }
