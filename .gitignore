@@ -3,5 +3,9 @@ dist
 bower_components
 .tmp
 
+backend/bin
+backend/pkg
+backend/src
+
 api
 notes
