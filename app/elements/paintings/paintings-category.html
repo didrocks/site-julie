@@ -128,15 +128,15 @@
           for (let painting of paintings) {
 
             let paintingRatio = painting.width / painting.height;
-            let matchWidth = true;
-            // the min is the first ratio, even if smaller (but matchWidth will be false and we will match width)
+            // height will be the minimal match for the picture if we don't have a ratio small enough
+            let matchWidth = false;
+            // the min is the first ratio, even if smaller (but matchWidth will be true and we will match width)
             let currRatio = orderedRatios[0];
             for (let ratio of orderedRatios) {
               if (ratio > paintingRatio) {
                 break;
               }
-              // height will be the minimal match for the picture
-              matchWidth = false;
+              matchWidth = true;
               currRatio = ratio;
             }
             paintingRatio = currRatio;
