@@ -21,7 +21,7 @@
     <div id="imagespatchwork" style$="{{_pageHeight}}">
       <template is="dom-repeat" items="[[_positionnedPaintings]]">
         <img-centered class="paintingElem" style$={{_stylefor(item)}}
-                      src="../../banner1_960x560.jpg" srcset="" alt="Image content"
+                      src="{{item.src}}" srcset="{{item.srcset}}" alt="{{item.alt}}"
                       match-width$="{{item.matchWidth}}"></img-centered>
       </template>
     </div>
