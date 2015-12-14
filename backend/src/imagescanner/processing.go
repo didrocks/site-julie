@@ -1,4 +1,4 @@
-package imagescanner
+package main
 
 import (
 	"fmt"

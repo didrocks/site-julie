@@ -1,4 +1,4 @@
-package imagescanner
+package main
 
 /* image breakpoints we handle for each resolution. We want a small one as well for images at 1x */
 var IMGBREAKPOINTS = map[float32][]int{

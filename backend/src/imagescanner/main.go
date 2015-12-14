@@ -10,7 +10,6 @@ import (
 	"fmt"
 	_ "image/jpeg"
 	_ "image/png"
-	"imagescanner"
 	"log"
 	"os"
 	"path"
@@ -46,9 +45,9 @@ func visitInputDir(path string, f os.FileInfo, err error) error {
 
 	cropheight := 0
 	if strings.Contains(translatedPath, "banners") {
-		cropheight = imagescanner.BANNERHEIGHT
+		cropheight = BANNERHEIGHT
 	}
-	img := imagescanner.ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
+	img := ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
 	img.ProcessImage(globalPath.relativeRootPath, globalPath.outputPath)
 
 	return nil
