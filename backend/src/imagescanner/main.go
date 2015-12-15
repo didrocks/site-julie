@@ -21,9 +21,10 @@ import (
 
 // GlobalPath is used for global path formatting
 type GlobalPath struct {
-	InputPath       string
-	OutputPath      string
-	RelativeWebPath string
+	InputPath        string
+	FinaleOutputPath string
+	OutputPath       string
+	RelativeWebPath  string
 }
 
 var globalPaths GlobalPath
@@ -76,22 +77,44 @@ func main() {
 	}
 
 	globalPaths.InputPath = path.Clean(paths[0])
-	globalPaths.OutputPath = path.Clean(paths[1])
+	globalPaths.FinaleOutputPath = path.Clean(paths[1])
+	globalPaths.OutputPath = globalPaths.FinaleOutputPath + ".new"
 	webRootPath := path.Clean(paths[2])
 
-	if commonPathIndex := strings.LastIndex(globalPaths.OutputPath, webRootPath); commonPathIndex == -1 {
-		log.Fatal(webRootPath, " isn't a sub directory of ", globalPaths.OutputPath, ". Exiting")
+	if commonPathIndex := strings.LastIndex(globalPaths.FinaleOutputPath, webRootPath); commonPathIndex == -1 {
+		log.Fatal(webRootPath, " needs to be a subdirectory of ", globalPaths.FinaleOutputPath)
 	} else {
-		globalPaths.RelativeWebPath = globalPaths.OutputPath[len(webRootPath)+1:]
+		globalPaths.RelativeWebPath = globalPaths.FinaleOutputPath[len(webRootPath)+1:]
 	}
 
-	if _, err := os.Stat(globalPaths.OutputPath); err == nil {
-		log.Fatal(globalPaths.OutputPath, " already exists. Exiting")
+	if err := os.RemoveAll(globalPaths.OutputPath); err != nil {
+		log.Fatal("Couldn't remove ", globalPaths.OutputPath)
 	}
 
 	err := filepath.Walk(globalPaths.InputPath, visitInputDir)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error while visiting ", err)
+		fmt.Fprintln(os.Stderr, "Error while scanning ", err)
 		os.Exit(1)
+	}
+
+	/*
+	 * Save previous generated sets to a backup directory. Try to keep one version.
+	 */
+	backupDir := globalPaths.FinaleOutputPath + ".bak"
+	if err := os.RemoveAll(backupDir); err != nil {
+		log.Fatal("Couldn't remove ", globalPaths.OutputPath)
+	}
+	if err := os.Rename(globalPaths.FinaleOutputPath, backupDir); err != nil {
+		log.Fatal("Couldn't archive ", globalPaths.FinaleOutputPath, ". Keeping previous generation around. Newly ",
+			"generated content is still available at ", globalPaths.FinaleOutputPath)
+	}
+
+	// put in place newly images
+	if err := os.Rename(globalPaths.OutputPath, globalPaths.FinaleOutputPath); err != nil {
+		log.Fatal("Couldn't save new ", globalPaths.OutputPath, ". Generated content is still available at ",
+			globalPaths.FinaleOutputPath, ". Trying to restore old images.")
+		if err := os.Rename(backupDir, globalPaths.FinaleOutputPath); err != nil {
+			log.Fatal("/!\\ Couldn't restore previous version of ", globalPaths.RelativeWebPath, ". No images are served!")
+		}
 	}
 }
