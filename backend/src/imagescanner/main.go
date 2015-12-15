@@ -15,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	_ "golang.org/x/image/webp"
 )
@@ -30,29 +31,40 @@ type GlobalPath struct {
 var globalPaths GlobalPath
 
 /*
- * Handle input files
+ * contains channels
  */
-func visitInputDir(path string, f os.FileInfo, err error) error {
-	if f == nil {
-		return fmt.Errorf("%s: does not exists or is not readable ", path)
-	}
-	translatedPath := strings.Replace(path, globalPaths.InputPath, globalPaths.OutputPath, 1)
-	if f.IsDir() {
-		err := os.MkdirAll(translatedPath, f.Mode())
-		if err != nil {
-			log.Fatal("Couldn't create ", translatedPath)
+type orchestrer struct {
+	wg       *sync.WaitGroup
+	receiver <-chan string
+}
+
+/*
+ * scan input directory. Use a closure for channel communication
+ */
+func (orch *orchestrer) scanInputDirFunc() filepath.WalkFunc {
+	return func(path string, info os.FileInfo, err error) error {
+		orch.wg.Add(1)
+		if info == nil {
+			return fmt.Errorf("%s: does not exists or is not readable ", path)
 		}
+		translatedPath := strings.Replace(path, globalPaths.InputPath, globalPaths.OutputPath, 1)
+		if info.IsDir() {
+			err := os.MkdirAll(translatedPath, info.Mode())
+			if err != nil {
+				log.Fatal("Couldn't create ", translatedPath)
+			}
+			return nil
+		}
+
+		cropheight := 0
+		if strings.Contains(translatedPath, "banners") {
+			cropheight = BANNERHEIGHT
+		}
+		img := ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
+		img.ProcessImage(globalPaths.RelativeWebPath, globalPaths.OutputPath)
+
 		return nil
 	}
-
-	cropheight := 0
-	if strings.Contains(translatedPath, "banners") {
-		cropheight = BANNERHEIGHT
-	}
-	img := ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
-	img.ProcessImage(globalPaths.RelativeWebPath, globalPaths.OutputPath)
-
-	return nil
 }
 
 /*
@@ -91,11 +103,21 @@ func main() {
 		log.Fatal("Couldn't remove ", globalPaths.OutputPath)
 	}
 
-	err := filepath.Walk(globalPaths.InputPath, visitInputDir)
+	/*
+	 *  Init and create our orchestration object and receiver routine
+	 */
+	orch := &orchestrer{receiver: make(chan string)}
+
+	err := filepath.Walk(globalPaths.InputPath, orch.scanInputDirFunc())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error while scanning ", err)
 		os.Exit(1)
 	}
+
+	// wait for all scanning to be done
+	orch.wg.Wait()
+
+	// TODO: tell our receiver routine to write the file
 
 	/*
 	 * Save previous generated sets to a backup directory. Try to keep one version.
