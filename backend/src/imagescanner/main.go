@@ -19,13 +19,14 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
-type globalpath struct {
-	inputPath        string
-	outputPath       string
-	relativeRootPath string
+// GlobalPath is used for global path formatting
+type GlobalPath struct {
+	InputPath       string
+	OutputPath      string
+	RelativeWebPath string
 }
 
-var globalPath globalpath
+var globalPaths GlobalPath
 
 /*
  * Handle input files
@@ -34,7 +35,7 @@ func visitInputDir(path string, f os.FileInfo, err error) error {
 	if f == nil {
 		return fmt.Errorf("%s: does not exists or is not readable ", path)
 	}
-	translatedPath := strings.Replace(path, globalPath.inputPath, globalPath.outputPath, 1)
+	translatedPath := strings.Replace(path, globalPaths.InputPath, globalPaths.OutputPath, 1)
 	if f.IsDir() {
 		err := os.MkdirAll(translatedPath, f.Mode())
 		if err != nil {
@@ -48,7 +49,7 @@ func visitInputDir(path string, f os.FileInfo, err error) error {
 		cropheight = BANNERHEIGHT
 	}
 	img := ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
-	img.ProcessImage(globalPath.relativeRootPath, globalPath.outputPath)
+	img.ProcessImage(globalPaths.RelativeWebPath, globalPaths.OutputPath)
 
 	return nil
 }
@@ -57,7 +58,7 @@ func visitInputDir(path string, f os.FileInfo, err error) error {
  * print command line usage
  */
 func usage() {
-	fmt.Fprintln(os.Stderr, "Usage: ", os.Args[0], " [OPTIONS] inputdir outputdir relativerootpath")
+	fmt.Fprintln(os.Stderr, "Usage: ", os.Args[0], " [OPTIONS] sourceimagedir outputimagedir websiterootdir")
 	flag.PrintDefaults()
 }
 
@@ -74,21 +75,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	globalPath.inputPath = path.Clean(paths[0])
-	globalPath.outputPath = path.Clean(paths[1])
-	commonPath := filepath.Base(path.Clean(paths[2]))
+	globalPaths.InputPath = path.Clean(paths[0])
+	globalPaths.OutputPath = path.Clean(paths[1])
+	webRootPath := path.Clean(paths[2])
 
-	index := strings.LastIndex(globalPath.outputPath, commonPath)
-	if index == -1 {
-		log.Fatal(globalPath.outputPath, "and", path.Clean(paths[2]), " doesn't have any common directory. Exiting")
-	}
-	globalPath.relativeRootPath = filepath.Join(path.Clean(paths[2]), globalPath.outputPath[index+len(commonPath):])
-
-	if _, err := os.Stat(globalPath.outputPath); err == nil {
-		log.Fatal(globalPath.outputPath, " already exists. Exiting")
+	if commonPathIndex := strings.LastIndex(globalPaths.OutputPath, webRootPath); commonPathIndex == -1 {
+		log.Fatal(webRootPath, " isn't a sub directory of ", globalPaths.OutputPath, ". Exiting")
+	} else {
+		globalPaths.RelativeWebPath = globalPaths.OutputPath[len(webRootPath)+1:]
 	}
 
-	err := filepath.Walk(globalPath.inputPath, visitInputDir)
+	if _, err := os.Stat(globalPaths.OutputPath); err == nil {
+		log.Fatal(globalPaths.OutputPath, " already exists. Exiting")
+	}
+
+	err := filepath.Walk(globalPaths.InputPath, visitInputDir)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error while visiting ", err)
 		os.Exit(1)
