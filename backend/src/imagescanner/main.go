@@ -20,15 +20,15 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
-// GlobalPath is used for global path formatting
-type GlobalPath struct {
-	InputPath        string
-	FinaleOutputPath string
-	OutputPath       string
-	RelativeWebPath  string
+// globalPath is used for global path formatting
+type globalPath struct {
+	inputPath        string
+	finaleOutputPath string
+	outputPath       string
+	relativeWebPath  string
 }
 
-var globalPaths GlobalPath
+var globalPaths globalPath
 
 /*
  * contains channels
@@ -89,19 +89,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	globalPaths.InputPath = path.Clean(paths[0])
-	globalPaths.FinaleOutputPath = path.Clean(paths[1])
-	globalPaths.OutputPath = globalPaths.FinaleOutputPath + ".new"
+	globalPaths.inputPath = path.Clean(paths[0])
+	globalPaths.finaleOutputPath = path.Clean(paths[1])
+	globalPaths.outputPath = globalPaths.finaleOutputPath + ".new"
 	webRootPath := path.Clean(paths[2])
 
-	if commonPathIndex := strings.LastIndex(globalPaths.FinaleOutputPath, webRootPath); commonPathIndex == -1 {
-		log.Fatal(webRootPath, " needs to be a subdirectory of ", globalPaths.FinaleOutputPath)
+	if commonPathIndex := strings.LastIndex(globalPaths.finaleOutputPath, webRootPath); commonPathIndex == -1 {
+		log.Fatal(webRootPath, " needs to be a subdirectory of ", globalPaths.finaleOutputPath)
 	} else {
-		globalPaths.RelativeWebPath = globalPaths.FinaleOutputPath[len(webRootPath)+1:]
+		globalPaths.relativeWebPath = globalPaths.finaleOutputPath[len(webRootPath)+1:]
 	}
 
-	if err := os.RemoveAll(globalPaths.OutputPath); err != nil {
-		log.Fatal("Couldn't remove ", globalPaths.OutputPath)
+	if err := os.RemoveAll(globalPaths.outputPath); err != nil {
+		log.Fatal("Couldn't remove ", globalPaths.outputPath)
 	}
 
 	/*
@@ -120,26 +120,30 @@ func main() {
 	// wait for all scanning to be done
 	orch.wg.Wait()
 
-	// TODO: tell our receiver routine to write the file
+	// tell our receiver that we are done scanning, so that it writes the file and waits for the completion
+	close(orch.collectorChan)
+	<-orch.collectorDone
 
 	/*
 	 * Save previous generated sets to a backup directory. Try to keep one version.
 	 */
-	backupDir := globalPaths.FinaleOutputPath + ".bak"
+	backupDir := globalPaths.finaleOutputPath + ".bak"
 	if err := os.RemoveAll(backupDir); err != nil {
-		log.Fatal("Couldn't remove ", globalPaths.OutputPath)
+		log.Fatal("Couldn't remove ", globalPaths.outputPath)
 	}
-	if err := os.Rename(globalPaths.FinaleOutputPath, backupDir); err != nil {
-		log.Fatal("Couldn't archive ", globalPaths.FinaleOutputPath, ". Keeping previous generation around. Newly ",
-			"generated content is still available at ", globalPaths.FinaleOutputPath)
+	if _, err := os.Stat(globalPaths.finaleOutputPath); err == nil {
+		if err := os.Rename(globalPaths.finaleOutputPath, backupDir); err != nil {
+			log.Fatal("Couldn't archive ", globalPaths.finaleOutputPath, ". Keeping previous generation around. Newly ",
+				"generated content is still available at ", globalPaths.finaleOutputPath)
+		}
 	}
 
 	// put in place newly images
-	if err := os.Rename(globalPaths.OutputPath, globalPaths.FinaleOutputPath); err != nil {
-		log.Fatal("Couldn't save new ", globalPaths.OutputPath, ". Generated content is still available at ",
-			globalPaths.FinaleOutputPath, ". Trying to restore old images.")
-		if err := os.Rename(backupDir, globalPaths.FinaleOutputPath); err != nil {
-			log.Fatal("/!\\ Couldn't restore previous version of ", globalPaths.RelativeWebPath, ". No images are served!")
+	if err := os.Rename(globalPaths.outputPath, globalPaths.finaleOutputPath); err != nil {
+		log.Fatal("Couldn't save new ", globalPaths.outputPath, ". Generated content is still available at ",
+			globalPaths.finaleOutputPath, ". Trying to restore old images.")
+		if err := os.Rename(backupDir, globalPaths.finaleOutputPath); err != nil {
+			log.Fatal("/!\\ Couldn't restore previous version of ", globalPaths.relativeWebPath, ". No images are served!")
 		}
 	}
 }
