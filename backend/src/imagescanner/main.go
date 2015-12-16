@@ -34,8 +34,9 @@ var globalPaths GlobalPath
  * contains channels
  */
 type orchestrer struct {
-	wg       *sync.WaitGroup
-	receiver <-chan string
+	wg            *sync.WaitGroup
+	collectorChan chan<- string
+	collectorDone chan bool
 }
 
 /*
@@ -106,7 +107,9 @@ func main() {
 	/*
 	 *  Init and create our orchestration object and receiver routine
 	 */
-	orch := &orchestrer{receiver: make(chan string)}
+	orch := &orchestrer{wg: &sync.WaitGroup{}, collectorDone: make(chan bool)}
+	orch.collectorChan = generateCollector(orch.collectorDone)
+	orch.collectorChan <- "string"
 
 	err := filepath.Walk(globalPaths.InputPath, orch.scanInputDirFunc())
 	if err != nil {
