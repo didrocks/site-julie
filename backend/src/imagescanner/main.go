@@ -44,7 +44,6 @@ type orchestrer struct {
  */
 func (orch *orchestrer) scanInputDirFunc() filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
-		orch.wg.Add(1)
 		if info == nil {
 			return fmt.Errorf("%s: does not exists or is not readable ", path)
 		}
@@ -60,13 +59,19 @@ func (orch *orchestrer) scanInputDirFunc() filepath.WalkFunc {
 			return nil
 		}
 
-		cropheight := 0
-		if strings.Contains(translatedPath, "banners") {
-			cropheight = BANNERHEIGHT
-		}
-		img := ImageInputInfo{InURL: path, OutURL: translatedPath, Cropheight: cropheight}
-		img.ProcessImage(globalPaths.RelativeWebPath, globalPaths.OutputPath)
+		// run processing image as a goroutine
+		orch.wg.Add(1)
+		go func() {
+			defer orch.wg.Done()
 
+			cropheight := 0
+			if strings.Contains(outPath, "banners") {
+				cropheight = BANNERHEIGHT
+			}
+			img := ImageInputInfo{InURL: path, OutURL: outPath, Cropheight: cropheight}
+			img.ProcessImage(globalPaths.relativeWebPath, globalPaths.outputPath)
+
+		}()
 		return nil
 	}
 }
