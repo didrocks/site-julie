@@ -48,11 +48,14 @@ func (orch *orchestrer) scanInputDirFunc() filepath.WalkFunc {
 		if info == nil {
 			return fmt.Errorf("%s: does not exists or is not readable ", path)
 		}
-		translatedPath := strings.Replace(path, globalPaths.InputPath, globalPaths.OutputPath, 1)
+
+		outPath := filepath.Clean(filepath.Join(globalPaths.outputPath, path))
+		relativePath := filepath.Clean(filepath.Join(globalPaths.relativeWebPath, path))
+
 		if info.IsDir() {
-			err := os.MkdirAll(translatedPath, info.Mode())
+			err := os.MkdirAll(outPath, info.Mode())
 			if err != nil {
-				log.Fatal("Couldn't create ", translatedPath)
+				return fmt.Errorf("Couldn't create %s", outPath)
 			}
 			return nil
 		}
