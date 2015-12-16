@@ -111,8 +111,11 @@ func main() {
 	orch.collectorChan = generateCollector(orch.collectorDone)
 	orch.collectorChan <- "string"
 
-	err := filepath.Walk(globalPaths.InputPath, orch.scanInputDirFunc())
-	if err != nil {
+	// walk through the filesystem, sending channels to it
+	if err := os.Chdir(globalPaths.inputPath); err != nil {
+		log.Fatal("Couldn't chdir to ", globalPaths.inputPath)
+	}
+	if err := filepath.Walk(".", orch.scanInputDirFunc()); err != nil {
 		fmt.Fprintln(os.Stderr, "Error while scanning ", err)
 		os.Exit(1)
 	}
